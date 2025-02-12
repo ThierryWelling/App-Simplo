@@ -5,11 +5,12 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import Link from 'next/link'
 import { toast } from 'sonner'
+import { Suspense } from 'react'
 
 // Função para adicionar delay
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 
-export default function LoginPage() {
+function LoginForm() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
@@ -173,5 +174,13 @@ export default function LoginPage() {
         </form>
       </div>
     </div>
+  )
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div>Carregando...</div>}>
+      <LoginForm />
+    </Suspense>
   )
 } 

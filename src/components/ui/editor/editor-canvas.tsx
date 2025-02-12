@@ -14,7 +14,7 @@ import {
   DragOverlay,
   UniqueIdentifier
 } from '@dnd-kit/core'
-import { Rnd, DraggableData, ResizeCallbackData } from 'react-rnd'
+import { Rnd, DraggableData, RndResizeCallback } from 'react-rnd'
 import { ImageWidget } from './image-widget'
 import { TextWidget } from './text-widget'
 import { ButtonWidget } from './button-widget'
@@ -584,6 +584,11 @@ export function EditorCanvas({ value, onChange }: EditorCanvasProps) {
               <div
                 ref={setNodeRef}
                 className={`canvas-area relative ${deviceStyles[device]} transition-all duration-300 ease-in-out shadow-2xl`}
+                onClick={(e: React.MouseEvent<HTMLDivElement>) => {
+                  if (e.target === e.currentTarget) {
+                    setSelectedWidget(null)
+                  }
+                }}
                 style={{
                   background: 'linear-gradient(to bottom right, rgba(24, 24, 27, 0.9), rgba(39, 39, 42, 0.9))',
                   backgroundImage: showGrid
@@ -599,11 +604,6 @@ export function EditorCanvas({ value, onChange }: EditorCanvasProps) {
                   border: '1px solid rgba(255,255,255,0.1)',
                   transform: `scale(${zoom / 100})`,
                   transformOrigin: 'center center',
-                }}
-                onClick={(e: React.MouseEvent<HTMLDivElement>) => {
-                  if (e.target === e.currentTarget) {
-                    setSelectedWidget(null)
-                  }
                 }}
               >
                 {elements.map(renderElement)}

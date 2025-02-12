@@ -119,7 +119,7 @@ export function ImageWidget({
               className="w-full h-full transition-all duration-200"
               style={{
                 borderRadius: `${config.borderRadius}px`,
-                opacity: config.opacity / 100,
+                opacity: (config.opacity ?? 100) / 100,
                 objectFit: config.fit as 'cover' | 'contain' | 'fill',
                 filter: `brightness(${config.filter?.brightness}%) contrast(${config.filter?.contrast}%) blur(${config.filter?.blur}px) grayscale(${config.filter?.grayscale}%)`,
                 border: config.border?.width ? `${config.border.width}px ${config.border.style} ${config.border.color}` : 'none',

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { useAuth } from '@/providers/auth-provider'
@@ -70,7 +70,7 @@ const defaultFormData: FormData = {
   }
 }
 
-export default function CustomizeLandingPage() {
+function CustomizeForm() {
   const [formData, setFormData] = useState<FormData>(defaultFormData)
   const [loading, setLoading] = useState(false)
   const router = useRouter()
@@ -497,5 +497,13 @@ export default function CustomizeLandingPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function CustomizeLandingPage() {
+  return (
+    <Suspense fallback={<div>Carregando...</div>}>
+      <CustomizeForm />
+    </Suspense>
   )
 } 
