@@ -14,7 +14,7 @@ import {
   DragOverlay,
   UniqueIdentifier
 } from '@dnd-kit/core'
-import { Rnd } from 'react-rnd'
+import { Rnd, DraggableData, ResizeCallbackData } from 'react-rnd'
 import { ImageWidget } from './image-widget'
 import { TextWidget } from './text-widget'
 import { ButtonWidget } from './button-widget'
@@ -338,7 +338,7 @@ export function EditorCanvas({ value, onChange }: EditorCanvasProps) {
         key={element.id}
         position={element.position}
         size={element.size}
-        onDragStop={(e, d) => {
+        onDragStop={(e, d: DraggableData) => {
           updateElement(element.id, { position: { x: d.x, y: d.y } })
         }}
         onResizeStop={(e, direction, ref, delta, position) => {
@@ -358,7 +358,7 @@ export function EditorCanvas({ value, onChange }: EditorCanvasProps) {
             ? 'ring-2 ring-purple-500 ring-offset-4 ring-offset-zinc-900' 
             : 'hover:ring-2 hover:ring-purple-500/50 hover:ring-offset-2 hover:ring-offset-zinc-900'
         }`}
-        onClick={(e) => {
+        onClick={(e: React.MouseEvent<HTMLDivElement>) => {
           e.stopPropagation()
           handleElementSelect(element.id)
         }}
@@ -495,7 +495,7 @@ export function EditorCanvas({ value, onChange }: EditorCanvasProps) {
         >
           {/* Painel de Configuração Modal */}
           {selectedWidget && showConfigPanel && (
-            <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50" onClick={(e) => {
+            <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50" onClick={(e: React.MouseEvent<HTMLDivElement>) => {
               if (e.target === e.currentTarget) {
                 setShowConfigPanel(false)
               }
@@ -600,7 +600,7 @@ export function EditorCanvas({ value, onChange }: EditorCanvasProps) {
                   transform: `scale(${zoom / 100})`,
                   transformOrigin: 'center center',
                 }}
-                onClick={(e) => {
+                onClick={(e: React.MouseEvent<HTMLDivElement>) => {
                   if (e.target === e.currentTarget) {
                     setSelectedWidget(null)
                   }
