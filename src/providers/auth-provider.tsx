@@ -120,12 +120,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const initializeAuth = async () => {
       try {
+        // Tenta recuperar a sessão do localStorage
+        const storedSession = localStorage.getItem('simplo_live_session')
+        if (storedSession) {
+          const parsedSession = JSON.parse(storedSession)
+          if (parsedSession?.user) {
+            await loadUserData(parsedSession.user.id)
+          }
+        }
+
         // Configura a persistência da sessão
         const { data: { session } } = await supabase.auth.getSession()
         
-        // Se já tiver uma sessão, carrega os dados do usuário
+        // Se já tiver uma sessão, carrega os dados do usuário e salva no localStorage
         if (session?.user) {
           await loadUserData(session.user.id)
+          localStorage.setItem('simplo_live_session', JSON.stringify(session))
         }
         
         // Verifica se há uma sessão ativa
@@ -141,15 +151,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           }
           setLoading(false)
 
-          // Configura refresh automático do token a cada 5 minutos
+          // Configura refresh automático do token a cada 3 minutos
           sessionRefreshInterval = setInterval(async () => {
-            const { error } = await supabase.auth.refreshSession()
-            if (error) {
-              console.error('Erro ao atualizar sessão:', error)
-              clearInterval(sessionRefreshInterval)
-              checkSession() // Tenta recuperar a sessão em caso de erro
+            try {
+              const { data: { session }, error } = await supabase.auth.refreshSession()
+              if (error) {
+                console.error('Erro ao atualizar sessão:', error)
+                clearInterval(sessionRefreshInterval)
+                checkSession() // Tenta recuperar a sessão em caso de erro
+              } else if (session) {
+                localStorage.setItem('simplo_live_session', JSON.stringify(session))
+              }
+            } catch (refreshError) {
+              console.error('Erro ao atualizar sessão:', refreshError)
             }
-          }, 5 * 60 * 1000) // 5 minutos
+          }, 3 * 60 * 1000) // 3 minutos
         }
       } catch (error) {
         console.error('Erro ao inicializar auth:', error)

@@ -19,11 +19,16 @@ export async function middleware(request: NextRequest) {
       error: sessionError
     } = await supabase.auth.getSession()
 
-    // Se houver erro na sessão, limpa e redireciona para login
+    // Se houver erro na sessão, tenta recuperar do localStorage
     if (sessionError) {
-      const redirectUrl = new URL('/login', request.url)
-      redirectUrl.searchParams.set('error', 'session_error')
-      return NextResponse.redirect(redirectUrl)
+      // Se não for uma rota pública, redireciona para login
+      if (!isPublicUrl) {
+        const redirectUrl = new URL('/login', request.url)
+        redirectUrl.searchParams.set('redirectTo', request.nextUrl.pathname)
+        redirectUrl.searchParams.set('error', 'session_expired')
+        return NextResponse.redirect(redirectUrl)
+      }
+      return res
     }
 
     // Se não estiver logado e não for uma rota pública, redireciona para login
@@ -48,9 +53,13 @@ export async function middleware(request: NextRequest) {
     return res
   } catch (error) {
     console.error('Erro crítico no middleware:', error)
-    const redirectUrl = new URL('/login', request.url)
-    redirectUrl.searchParams.set('error', 'session_error')
-    return NextResponse.redirect(redirectUrl)
+    // Se houver erro e não for uma rota pública, redireciona para login
+    if (!publicUrls.some(url => request.nextUrl.pathname.startsWith(url))) {
+      const redirectUrl = new URL('/login', request.url)
+      redirectUrl.searchParams.set('error', 'session_error')
+      return NextResponse.redirect(redirectUrl)
+    }
+    return res
   }
 }
 

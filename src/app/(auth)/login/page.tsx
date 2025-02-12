@@ -22,6 +22,25 @@ function LoginForm() {
   const supabase = createClientComponentClient()
 
   useEffect(() => {
+    // Verifica se já existe uma sessão
+    const checkExistingSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (session) {
+        const { data: userData } = await supabase
+          .from('users')
+          .select('is_approved')
+          .eq('id', session.user.id)
+          .single()
+
+        if (userData?.is_approved) {
+          router.push('/dashboard')
+          return
+        }
+      }
+    }
+
+    checkExistingSession()
+
     // Mostra mensagem quando o usuário é redirecionado por não estar autenticado
     if (unauthorized) {
       toast.error('Você precisa fazer login para acessar esta página', {
@@ -32,6 +51,11 @@ function LoginForm() {
 
     // Mostra mensagem quando há erro de sessão
     if (error === 'session_error') {
+      toast.error('Sua sessão expirou. Por favor, faça login novamente', {
+        duration: 5000,
+        position: 'top-center'
+      })
+    } else if (error === 'session_expired') {
       toast.error('Sua sessão expirou. Por favor, faça login novamente', {
         duration: 5000,
         position: 'top-center'
@@ -77,8 +101,11 @@ function LoginForm() {
           throw new Error('Sua conta ainda não foi aprovada pelo administrador')
         }
 
-        // Força a atualização da sessão
-        await supabase.auth.refreshSession()
+        // Força a atualização da sessão e salva localmente
+        const { data: { session } } = await supabase.auth.refreshSession()
+        if (session) {
+          localStorage.setItem('simplo_live_session', JSON.stringify(session))
+        }
         
         toast.success('Login realizado com sucesso!')
         router.push(redirectTo)
@@ -94,6 +121,7 @@ function LoginForm() {
       
       try {
         await supabase.auth.signOut()
+        localStorage.removeItem('simplo_live_session')
       } catch (logoutError) {
         console.error('Erro ao fazer logout:', logoutError)
       }
