@@ -1,0 +1,88 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+ 
+@layer base {
+  body {
+    @apply bg-background text-text-primary;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply text-[#1A1F2E];
+  }
+
+  p {
+    @apply text-[#1A1F2E];
+  }
+
+  /* Estilização da Barra de Rolagem */
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-background-secondary rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-gradient-to-b from-primary to-accent rounded-full;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply from-primary-light to-accent opacity-90;
+  }
+}
+
+@layer components {
+  /* Botões */
+  .btn-primary {
+    @apply bg-primary text-white hover:bg-primary-light shadow-button-primary transition-all duration-200 ease-in-out hover:scale-102 active:scale-98;
+  }
+
+  .btn-secondary {
+    @apply bg-button-secondary text-text-primary hover:bg-button-secondary-hover border border-border transition-all duration-200 ease-in-out hover:scale-102 active:scale-98;
+  }
+
+  .btn-action {
+    @apply bg-gradient-primary text-white hover:bg-gradient-hover shadow-button transition-all duration-200 ease-in-out hover:scale-102 active:scale-98;
+  }
+
+  /* Cards */
+  .card {
+    @apply bg-background border border-border shadow-card rounded-lg hover:shadow-elevated transition-all duration-200;
+  }
+
+  /* Inputs */
+  .input {
+    @apply bg-input border border-border text-text-primary placeholder-text-secondary focus:border-input-focus outline-none transition-colors duration-200;
+  }
+
+  /* Mensagens de Estado */
+  .alert-success {
+    @apply bg-success-bg border border-success-border text-success px-4 py-3 rounded-lg;
+  }
+
+  .alert-error {
+    @apply bg-error-bg border border-error-border text-error px-4 py-3 rounded-lg;
+  }
+
+  .alert-warning {
+    @apply bg-warning-bg border border-warning-border text-warning-text px-4 py-3 rounded-lg;
+  }
+
+  /* Glassmorphism */
+  .glass {
+    @apply bg-white/80 backdrop-blur-glass border border-white/50;
+  }
+
+  /* Loading */
+  .loading-spinner {
+    @apply text-primary animate-spin;
+  }
+
+  .loading-backdrop {
+    @apply fixed inset-0 bg-white/80 backdrop-blur-glass flex items-center justify-center;
+  }
+} 

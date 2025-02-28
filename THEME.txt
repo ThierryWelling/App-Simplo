@@ -1,0 +1,157 @@
+# Tema Claro - CyberFit Pro
+
+## 🎨 Paleta de Cores
+
+### Cores Principais
+- Fundo Principal: #FFFFFF (Branco puro)
+- Fundo Secundário: #F8F9FC (Cinza muito claro)
+- Fundo de Cards: #FFFFFF com sombra suave
+- Texto Principal: #1A1F2E (Azul escuro quase preto)
+- Texto Secundário: #64748B (Cinza azulado)
+
+### Cores de Destaque
+- Roxo Principal: #7C3AFF (Mantido do tema escuro)
+- Roxo Claro: #9B6AFF (Para hover e elementos secundários)
+- Azul Accent: #4CC9F0 (Mantido para elementos de destaque)
+- Verde Sucesso: #22C55E
+- Vermelho Erro: #EF4444
+
+### Gradientes
+- Gradiente Principal: linear-gradient(135deg, #7C3AFF 0%, #4CC9F0 100%)
+- Gradiente Hover: linear-gradient(135deg, #9B6AFF 0%, #60D3F7 100%)
+- Gradiente Card: linear-gradient(180deg, #FFFFFF 0%, #F8F9FC 100%)
+
+## 💫 Elementos de Interface
+
+### Cards e Containers
+- Fundo: #FFFFFF
+- Borda: 1px solid #E2E8F0
+- Sombra: 0 4px 6px -1px rgba(0, 0, 0, 0.1)
+- Border Radius: 16px (rounded-xl)
+- Hover: Sombra mais pronunciada e borda #7C3AFF15
+
+### Botões
+1. Botão Primário:
+   - Fundo: #7C3AFF
+   - Texto: #FFFFFF
+   - Hover: #9B6AFF
+   - Sombra: 0 4px 12px rgba(124, 58, 255, 0.3)
+
+2. Botão Secundário:
+   - Fundo: #F1F5F9
+   - Texto: #1A1F2E
+   - Hover: #E2E8F0
+   - Borda: 1px solid #E2E8F0
+
+3. Botão de Ação:
+   - Fundo: Gradiente Principal
+   - Texto: #FFFFFF
+   - Hover: Gradiente Hover
+   - Sombra: 0 4px 12px rgba(124, 58, 255, 0.2)
+
+### Inputs
+- Fundo: #F8FAFC
+- Borda: 1px solid #E2E8F0
+- Texto: #1A1F2E
+- Placeholder: #94A3B8
+- Focus: Borda #7C3AFF
+- Ícones: #64748B
+
+### Sidebar
+- Fundo: #FFFFFF
+- Borda Direita: 1px solid #E2E8F0
+- Item Ativo: Fundo #7C3AFF, Texto #FFFFFF
+- Item Inativo: Texto #64748B, Hover #F1F5F9
+
+## 🎭 Efeitos e Animações
+
+### Glassmorphism
+- Background: rgba(255, 255, 255, 0.8)
+- Backdrop Filter: blur(12px)
+- Borda: 1px solid rgba(255, 255, 255, 0.5)
+
+### Sombras
+- Card: 0 4px 6px -1px rgba(0, 0, 0, 0.1)
+- Elevado: 0 10px 15px -3px rgba(0, 0, 0, 0.1)
+- Botão: 0 4px 12px rgba(124, 58, 255, 0.2)
+
+### Transições
+- Duração: 200ms
+- Timing: ease-in-out
+- Hover Scale: 1.02
+- Active Scale: 0.98
+
+## 📱 Responsividade
+
+### Breakpoints
+- Mobile: 360px - 639px
+- Tablet: 640px - 1023px
+- Desktop: 1024px+
+
+### Adaptações Mobile
+- Cards em coluna única
+- Sidebar se torna menu inferior
+- Fonte reduzida em 0.875rem
+- Padding reduzido para 16px
+
+## 🖼️ Elementos Decorativos
+
+### Padrões e Texturas
+- Grid: #E2E8F0 pontos ou linhas
+- Opacity: 0.1
+- Escala: 20px x 20px
+
+### Ícones
+- Estilo: Regular ou Light
+- Cor: #64748B
+- Hover: #7C3AFF
+- Tamanhos: 16px, 20px, 24px
+
+### Notificações e Badges
+- Fundo: #7C3AFF
+- Texto: #FFFFFF
+- Tamanho: 18px
+- Border Radius: 9999px
+
+## 📊 Gráficos e Dados
+
+### Tabelas
+- Header: #F8FAFC
+- Linhas Alternadas: #FFFFFF / #F8FAFC
+- Borda: 1px solid #E2E8F0
+- Hover: #F1F5F9
+
+### Gráficos
+- Cores Primárias: #7C3AFF, #4CC9F0
+- Cores Secundárias: #22C55E, #F59E0B, #EF4444
+- Grid: #E2E8F0
+- Tooltips: Fundo #FFFFFF, Sombra suave
+
+## 🎯 Estados e Feedback
+
+### Loading
+- Spinner: #7C3AFF
+- Backdrop: rgba(255, 255, 255, 0.8)
+- Texto: #64748B
+
+### Mensagens
+1. Sucesso:
+   - Fundo: #F0FDF4
+   - Borda: #86EFAC
+   - Texto: #22C55E
+
+2. Erro:
+   - Fundo: #FEF2F2
+   - Borda: #FECACA
+   - Texto: #EF4444
+
+3. Alerta:
+   - Fundo: #FFFBEB
+   - Borda: #FDE68A
+   - Texto: #F59E0B
+
+### Tooltips
+- Fundo: #1A1F2E
+- Texto: #FFFFFF
+- Sombra: 0 4px 6px rgba(0, 0, 0, 0.1)
+- Border Radius: 8px 
