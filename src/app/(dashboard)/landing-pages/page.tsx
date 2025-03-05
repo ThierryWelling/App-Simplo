@@ -23,7 +23,22 @@ interface LandingPage {
   title: string
   description: string
   slug: string
-  content: any
+  content: {
+    formType: 'custom' | 'system'
+    customHtml?: string
+    formFields?: any[]
+    formPosition: 'left' | 'right' | 'center'
+    colors: {
+      primary: string
+      secondary: string
+      background: string
+      text: string
+    }
+    fonts: {
+      title: string
+      body: string
+    }
+  }
   published: boolean
   created_at: string
   updated_at: string
@@ -254,9 +269,11 @@ export default function LandingPagesPage() {
           landingPage={selectedPage}
           onClose={() => setSelectedPage(null)}
           onSaved={(updatedPage) => {
-            setLandingPages(pages =>
-              pages.map(page =>
-                page.id === updatedPage.id ? updatedPage : page
+            setLandingPages(pages => 
+              pages.map(page => 
+                page.id === updatedPage.id 
+                  ? { ...page, ...updatedPage } 
+                  : page
               )
             )
             setSelectedPage(null)
