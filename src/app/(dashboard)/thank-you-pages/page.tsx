@@ -22,6 +22,8 @@ interface ThankYouPage {
   }
   published: boolean
   created_at: string
+  landing_page_id: string | null
+  background_url: string | null
 }
 
 export default function ThankYouPagesPage() {
