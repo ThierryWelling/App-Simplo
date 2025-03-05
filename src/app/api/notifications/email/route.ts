@@ -1,6 +1,10 @@
 import { NextResponse } from 'next/server'
 import { Resend } from 'resend'
 
+if (!process.env.RESEND_API_KEY) {
+  throw new Error('RESEND_API_KEY não está configurada nas variáveis de ambiente')
+}
+
 const resend = new Resend(process.env.RESEND_API_KEY)
 
 export async function POST(request: Request) {
