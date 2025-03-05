@@ -75,7 +75,28 @@ export async function GET(request: Request) {
     }
 
     // Buscar total de registros
-    const { count } = await leadsQuery.count()
+    const countQuery = supabase
+      .from('leads')
+      .select('*', { count: 'exact', head: true })
+
+    // Aplicar os mesmos filtros da query principal
+    if (query.landing_page_id) {
+      countQuery.eq('landing_page_id', query.landing_page_id)
+    }
+
+    if (query.start_date) {
+      countQuery.gte('created_at', query.start_date)
+    }
+
+    if (query.end_date) {
+      countQuery.lte('created_at', query.end_date)
+    }
+
+    const { count, error: countError } = await countQuery
+
+    if (countError) {
+      throw countError
+    }
 
     // Buscar leads com paginação
     const { data: leads, error } = await leadsQuery
