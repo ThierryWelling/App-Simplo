@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import { Sidebar } from '@/components/dashboard/sidebar'
+import { BaseLayout } from '@/components/layout/base-layout'
 
 export default function DashboardLayout({
   children,
@@ -23,14 +24,7 @@ export default function DashboardLayout({
   }
 
   return (
-    <div 
-      className="min-h-screen bg-background-secondary"
-      style={{
-        backgroundImage: `radial-gradient(#E2E8F0 1px, transparent 1px)`,
-        backgroundSize: '20px 20px',
-        backgroundPosition: '-10px -10px',
-      }}
-    >
+    <BaseLayout withAnimation={false}>
       {/* Sidebar */}
       <Sidebar onCollapse={setIsMenuCollapsed} />
 
@@ -54,6 +48,6 @@ export default function DashboardLayout({
           <p className="text-text-secondary">Carregando...</p>
         </div>
       </div>
-    </div>
+    </BaseLayout>
   )
 } 

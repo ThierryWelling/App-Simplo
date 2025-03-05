@@ -101,6 +101,64 @@ export type Database = {
           created_at?: string
         }
       }
+      page_views: {
+        Row: {
+          id: string
+          landing_page_id: string
+          session_id: string
+          referrer?: string
+          user_agent?: string
+          duration_seconds: number
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          landing_page_id: string
+          session_id: string
+          referrer?: string
+          user_agent?: string
+          duration_seconds?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          landing_page_id?: string
+          session_id?: string
+          referrer?: string
+          user_agent?: string
+          duration_seconds?: number
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      analytics_events: {
+        Row: {
+          id: string
+          landing_page_id: string
+          session_id: string
+          event_type: string
+          event_data: any
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          landing_page_id: string
+          session_id: string
+          event_type: string
+          event_data?: any
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          landing_page_id?: string
+          session_id?: string
+          event_type?: string
+          event_data?: any
+          created_at?: string
+        }
+      }
     }
   }
 } 

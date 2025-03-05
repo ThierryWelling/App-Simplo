@@ -1,11 +1,12 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
 import { supabase } from '@/lib/supabase'
-import { Loader2 } from 'lucide-react'
+import { Loader2, AlertCircle } from 'lucide-react'
 
 const authSchema = z.object({
   email: z.string().email('Email inválido'),
@@ -15,8 +16,27 @@ const authSchema = z.object({
 type AuthFormData = z.infer<typeof authSchema>
 
 export function AuthForm() {
+  const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
+  const [isClient, setIsClient] = useState(false)
+
+  useEffect(() => {
+    setIsClient(true)
+    
+    async function checkAuth() {
+      try {
+        const { data: { session } } = await supabase.auth.getSession()
+        if (session) {
+          router.push('/dashboard')
+        }
+      } catch (error) {
+        console.error('Erro ao verificar autenticação:', error)
+      }
+    }
+    
+    checkAuth()
+  }, [router])
 
   const {
     register,
@@ -41,7 +61,7 @@ export function AuthForm() {
         return
       }
 
-      window.location.href = '/dashboard'
+      router.push('/dashboard')
       
     } catch (error) {
       console.error('Erro:', error)
@@ -51,73 +71,91 @@ export function AuthForm() {
     }
   }
 
+  // Não renderiza nada durante a hidratação
+  if (!isClient) {
+    return null
+  }
+
   return (
-    <div className="card p-8 w-full max-w-md mx-auto">
-      <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-[#1A1F2E] mb-2">
-          Simplo Pages
-        </h1>
-        <p className="text-[#1A1F2E] opacity-80">
-          Faça login para acessar o painel
-        </p>
-      </div>
+    <div className="fixed inset-0 flex items-center justify-center p-4">
+      <div className="w-full max-w-md bg-white/80 backdrop-blur-lg rounded-3xl shadow-card p-8 md:p-12">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-[#1A1F2E] mb-3">
+            Bem-vindo de volta
+          </h1>
+          <p className="text-slate-600">
+            Faça login para acessar o painel
+          </p>
+        </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
-        {error && (
-          <div className="alert-error">
-            {error}
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6" noValidate>
+          {error && (
+            <div className="bg-error-bg/80 backdrop-blur text-error p-4 rounded-xl flex items-start gap-3">
+              <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
+              <span>{error}</span>
+            </div>
+          )}
+          
+          <div className="space-y-2">
+            <label htmlFor="email" className="text-sm font-medium text-[#1A1F2E]">
+              Email
+            </label>
+            <input
+              id="email"
+              type="email"
+              className={`w-full px-4 py-3 rounded-xl bg-white/50 backdrop-blur border border-slate-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all duration-200 ${
+                errors.email ? 'border-error focus:border-error focus:ring-error/20' : ''
+              }`}
+              placeholder="seu@email.com"
+              {...register('email')}
+              disabled={isLoading}
+            />
+            {errors.email && (
+              <p className="text-error text-sm flex items-center gap-2">
+                <AlertCircle className="w-4 h-4" />
+                {errors.email.message}
+              </p>
+            )}
           </div>
-        )}
-        
-        <div className="space-y-1">
-          <label htmlFor="email" className="text-sm font-medium text-text-primary">
-            Email
-          </label>
-          <input
-            id="email"
-            type="email"
-            className="input w-full px-4 py-2 rounded-xl"
-            placeholder="seu@email.com"
-            {...register('email')}
-            disabled={isLoading}
-          />
-          {errors.email && (
-            <p className="text-error text-sm">{errors.email.message}</p>
-          )}
-        </div>
 
-        <div className="space-y-1">
-          <label htmlFor="password" className="text-sm font-medium text-text-primary">
-            Senha
-          </label>
-          <input
-            id="password"
-            type="password"
-            className="input w-full px-4 py-2 rounded-xl"
-            placeholder="••••••••"
-            {...register('password')}
-            disabled={isLoading}
-          />
-          {errors.password && (
-            <p className="text-error text-sm">{errors.password.message}</p>
-          )}
-        </div>
+          <div className="space-y-2">
+            <label htmlFor="password" className="text-sm font-medium text-[#1A1F2E]">
+              Senha
+            </label>
+            <input
+              id="password"
+              type="password"
+              className={`w-full px-4 py-3 rounded-xl bg-white/50 backdrop-blur border border-slate-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all duration-200 ${
+                errors.password ? 'border-error focus:border-error focus:ring-error/20' : ''
+              }`}
+              placeholder="••••••••"
+              {...register('password')}
+              disabled={isLoading}
+            />
+            {errors.password && (
+              <p className="text-error text-sm flex items-center gap-2">
+                <AlertCircle className="w-4 h-4" />
+                {errors.password.message}
+              </p>
+            )}
+          </div>
 
-        <button
-          type="submit"
-          className="btn-action w-full py-2 rounded-xl flex items-center justify-center gap-2"
-          disabled={isLoading}
-        >
-          {isLoading ? (
-            <>
-              <Loader2 className="w-5 h-5 animate-spin" />
-              Entrando...
-            </>
-          ) : (
-            'Entrar'
-          )}
-        </button>
-      </form>
+          <button
+            type="submit"
+            className="w-full bg-gradient-primary text-white font-medium px-4 py-3 rounded-xl shadow-button hover:shadow-button-hover disabled:opacity-70 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-2"
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <>
+                <Loader2 className="w-5 h-5 animate-spin" />
+                Entrando...
+              </>
+            ) : (
+              'Entrar'
+            )}
+          </button>
+        </form>
+      </div>
     </div>
   )
 } 

@@ -85,4 +85,36 @@
   .loading-backdrop {
     @apply fixed inset-0 bg-white/80 backdrop-blur-glass flex items-center justify-center;
   }
+}
+
+@layer utilities {
+  .animation-delay-1000 {
+    animation-delay: 1s;
+  }
+  .animation-delay-2000 {
+    animation-delay: 2s;
+  }
+}
+
+/* Estilos para o fundo animado */
+.bg-grid-slate-100 {
+  background-size: 32px 32px;
+  background-position: 0 0;
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient 8s ease infinite;
 } 
