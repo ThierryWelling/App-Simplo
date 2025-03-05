@@ -1,6 +1,6 @@
 import { supabase } from '@/lib/supabase'
 import { notFound } from 'next/navigation'
-import { ThankYouPageForm } from '../components/thank-you-page-form'
+import { ThankYouPageForm } from '../../components/thank-you-page-form'
 
 interface Props {
   params: {
