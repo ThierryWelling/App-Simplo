@@ -163,7 +163,7 @@ export function CreateLandingPageDialog({ onCreated }: CreateLandingPageDialogPr
       if (participantsImage) {
         const { data: participantsData, error: participantsError } = await supabase.storage
           .from('landing-pages')
-          .upload(`participants/${Date.now()}-${participantsImage.name}`, participantsImage)
+          .upload(`apresentadores/${Date.now()}-${participantsImage.name}`, participantsImage)
         
         if (participantsError) throw participantsError
         participantsImageUrl = participantsData.path
