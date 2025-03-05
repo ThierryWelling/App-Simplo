@@ -272,7 +272,7 @@ export default function LandingPagesPage() {
             setLandingPages(pages => 
               pages.map(page => 
                 page.id === updatedPage.id 
-                  ? { ...page, ...updatedPage } 
+                  ? updatedPage 
                   : page
               )
             )

@@ -62,18 +62,21 @@ interface LandingPage {
       body: string
     }
   }
-  ga_id?: string
-  meta_pixel_id?: string
+  published: boolean
+  created_at: string
+  updated_at: string
   logo_url?: string
   background_url?: string
   event_date_image_url?: string
   participants_image_url?: string
+  ga_id?: string
+  meta_pixel_id?: string
 }
 
 interface EditLandingPageDialogProps {
   landingPage: LandingPage
   onClose: () => void
-  onSaved?: () => void
+  onSaved: (updatedPage: LandingPage) => void
 }
 
 const fieldTypes = [
@@ -216,7 +219,27 @@ export function EditLandingPageDialog({ landingPage, onClose, onSaved }: EditLan
       if (error) throw error
 
       onClose()
-      onSaved?.()
+      onSaved({
+        ...landingPage,
+        title: data.title,
+        description: data.description,
+        slug: data.slug,
+        logo_url: logoUrl,
+        background_url: backgroundUrl,
+        event_date_image_url: eventDateImageUrl,
+        participants_image_url: participantsImageUrl,
+        content: {
+          formType: data.formType,
+          customHtml: data.customHtml,
+          formFields: data.formType === 'system' ? formFields : undefined,
+          formPosition: data.formPosition,
+          colors: data.colors,
+          fonts: data.fonts
+        },
+        ga_id: data.analytics.gaId,
+        meta_pixel_id: data.analytics.metaPixelId,
+        updated_at: new Date().toISOString()
+      })
     } catch (error) {
       console.error('Erro ao atualizar landing page:', error)
       alert('Erro ao atualizar landing page. Tente novamente.')
