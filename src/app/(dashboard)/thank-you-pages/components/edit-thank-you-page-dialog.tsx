@@ -171,7 +171,7 @@ export function EditThankYouPageDialog({ page, isOpen, onClose, onUpdate }: Prop
   }
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isOpen} onClose={onClose}>
       <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-2xl font-semibold">Editar Página de Agradecimento</DialogTitle>
