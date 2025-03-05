@@ -73,7 +73,7 @@ interface LandingPage {
 interface EditLandingPageDialogProps {
   landingPage: LandingPage
   onClose: () => void
-  onSaved: (updatedPage: LandingPage) => void
+  onSaved?: () => void
 }
 
 const fieldTypes = [
@@ -158,7 +158,7 @@ export function EditLandingPageDialog({ landingPage, onClose, onSaved }: EditLan
           .upload(`logos/${Date.now()}-${logo.name}`, logo)
         
         if (logoError) throw logoError
-        logoUrl = `logos/${logoData.path}`
+        logoUrl = logoData.path
       }
 
       if (background) {
@@ -167,7 +167,7 @@ export function EditLandingPageDialog({ landingPage, onClose, onSaved }: EditLan
           .upload(`backgrounds/${Date.now()}-${background.name}`, background)
         
         if (bgError) throw bgError
-        backgroundUrl = `backgrounds/${bgData.path}`
+        backgroundUrl = bgData.path
       }
 
       if (eventDateImage) {
@@ -176,20 +176,20 @@ export function EditLandingPageDialog({ landingPage, onClose, onSaved }: EditLan
           .upload(`event-dates/${Date.now()}-${eventDateImage.name}`, eventDateImage)
         
         if (eventError) throw eventError
-        eventDateImageUrl = `event-dates/${eventData.path}`
+        eventDateImageUrl = eventData.path
       }
 
       if (participantsImage) {
         const { data: participantsData, error: participantsError } = await supabase.storage
           .from('landing-pages')
-          .upload(`participants/${Date.now()}-${participantsImage.name}`, participantsImage)
+          .upload(`apresentadores/${Date.now()}-${participantsImage.name}`, participantsImage)
         
         if (participantsError) throw participantsError
-        participantsImageUrl = `participants/${participantsData.path}`
+        participantsImageUrl = participantsData.path
       }
 
       // Atualizar landing page
-      const { data: updatedPage, error } = await supabase
+      const { error } = await supabase
         .from('landing_pages')
         .update({
           title: data.title,
@@ -208,15 +208,15 @@ export function EditLandingPageDialog({ landingPage, onClose, onSaved }: EditLan
             fonts: data.fonts
           },
           ga_id: data.analytics.gaId,
-          meta_pixel_id: data.analytics.metaPixelId
+          meta_pixel_id: data.analytics.metaPixelId,
+          updated_at: new Date().toISOString()
         })
         .eq('id', landingPage.id)
-        .select()
-        .single()
 
       if (error) throw error
 
-      onSaved(updatedPage)
+      onClose()
+      onSaved?.()
     } catch (error) {
       console.error('Erro ao atualizar landing page:', error)
       alert('Erro ao atualizar landing page. Tente novamente.')
