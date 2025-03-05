@@ -146,7 +146,8 @@ export function EditLandingPageDialog({ landingPage, onClose, onSaved }: EditLan
     }
   })
 
-  const onSubmit = async (data: EditLandingPageData) => {
+  const handleFormSubmit = handleSubmit(async (data) => {
+    console.log('Iniciando atualização da landing page:', data)
     setIsLoading(true)
     try {
       // Upload de imagens
@@ -156,71 +157,63 @@ export function EditLandingPageDialog({ landingPage, onClose, onSaved }: EditLan
       let participantsImageUrl = landingPage.participants_image_url
 
       if (logo) {
+        console.log('Fazendo upload do logo...')
         const { data: logoData, error: logoError } = await supabase.storage
           .from('landing-pages')
           .upload(`logos/${Date.now()}-${logo.name}`, logo)
         
-        if (logoError) throw logoError
+        if (logoError) {
+          console.error('Erro no upload do logo:', logoError)
+          throw logoError
+        }
         logoUrl = logoData.path
+        console.log('Logo enviado com sucesso:', logoUrl)
       }
 
       if (background) {
+        console.log('Fazendo upload do background...')
         const { data: bgData, error: bgError } = await supabase.storage
           .from('landing-pages')
           .upload(`backgrounds/${Date.now()}-${background.name}`, background)
         
-        if (bgError) throw bgError
+        if (bgError) {
+          console.error('Erro no upload do background:', bgError)
+          throw bgError
+        }
         backgroundUrl = bgData.path
+        console.log('Background enviado com sucesso:', backgroundUrl)
       }
 
       if (eventDateImage) {
+        console.log('Fazendo upload da imagem de data...')
         const { data: eventData, error: eventError } = await supabase.storage
           .from('landing-pages')
           .upload(`event-dates/${Date.now()}-${eventDateImage.name}`, eventDateImage)
         
-        if (eventError) throw eventError
+        if (eventError) {
+          console.error('Erro no upload da imagem de data:', eventError)
+          throw eventError
+        }
         eventDateImageUrl = eventData.path
+        console.log('Imagem de data enviada com sucesso:', eventDateImageUrl)
       }
 
       if (participantsImage) {
+        console.log('Fazendo upload da imagem de participantes...')
         const { data: participantsData, error: participantsError } = await supabase.storage
           .from('landing-pages')
           .upload(`apresentadores/${Date.now()}-${participantsImage.name}`, participantsImage)
         
-        if (participantsError) throw participantsError
+        if (participantsError) {
+          console.error('Erro no upload da imagem de participantes:', participantsError)
+          throw participantsError
+        }
         participantsImageUrl = participantsData.path
+        console.log('Imagem de participantes enviada com sucesso:', participantsImageUrl)
       }
 
-      // Atualizar landing page
-      const { error } = await supabase
-        .from('landing_pages')
-        .update({
-          title: data.title,
-          description: data.description,
-          slug: data.slug,
-          logo_url: logoUrl,
-          background_url: backgroundUrl,
-          event_date_image_url: eventDateImageUrl,
-          participants_image_url: participantsImageUrl,
-          content: {
-            formType: data.formType,
-            customHtml: data.customHtml,
-            formFields: data.formType === 'system' ? formFields : undefined,
-            formPosition: data.formPosition,
-            colors: data.colors,
-            fonts: data.fonts
-          },
-          ga_id: data.analytics.gaId,
-          meta_pixel_id: data.analytics.metaPixelId,
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', landingPage.id)
-
-      if (error) throw error
-
-      onClose()
-      onSaved({
-        ...landingPage,
+      console.log('Atualizando dados da landing page...')
+      const updateData = {
         title: data.title,
         description: data.description,
         slug: data.slug,
@@ -239,25 +232,62 @@ export function EditLandingPageDialog({ landingPage, onClose, onSaved }: EditLan
         ga_id: data.analytics.gaId,
         meta_pixel_id: data.analytics.metaPixelId,
         updated_at: new Date().toISOString()
-      })
+      }
+      console.log('Dados para atualização:', updateData)
+
+      // Atualizar landing page
+      const { data: updatedData, error } = await supabase
+        .from('landing_pages')
+        .update(updateData)
+        .eq('id', landingPage.id)
+        .select()
+        .single()
+
+      if (error) {
+        console.error('Erro ao atualizar landing page:', error)
+        throw error
+      }
+
+      console.log('Landing page atualizada com sucesso:', updatedData)
+
+      const updatedPage = {
+        ...landingPage,
+        ...updateData,
+        id: landingPage.id,
+        published: landingPage.published,
+        created_at: landingPage.created_at
+      }
+
+      onClose()
+      onSaved(updatedPage)
     } catch (error) {
-      console.error('Erro ao atualizar landing page:', error)
-      alert('Erro ao atualizar landing page. Tente novamente.')
+      console.error('Erro detalhado ao atualizar landing page:', error)
+      alert('Erro ao atualizar landing page. Por favor, verifique o console para mais detalhes.')
     } finally {
       setIsLoading(false)
     }
-  }
+  })
 
   return (
     <Dialog.Root open={true} onOpenChange={(open) => !open && onClose()}>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 bg-black/40 backdrop-blur-sm" />
-        <Dialog.Content className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-background rounded-2xl shadow-elevated p-6">
+        <Dialog.Content 
+          className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-background rounded-2xl shadow-elevated p-6"
+          onInteractOutside={(e) => {
+            if (isLoading) {
+              e.preventDefault()
+            }
+          }}
+        >
           <div className="flex items-center justify-between mb-6">
             <Dialog.Title className="text-2xl font-bold text-[#1A1F2E]">
               Editar Landing Page
             </Dialog.Title>
-            <Dialog.Close className="text-text-secondary hover:text-text-primary rounded-lg p-2 transition-colors">
+            <Dialog.Close 
+              className="text-text-secondary hover:text-text-primary rounded-lg p-2 transition-colors"
+              disabled={isLoading}
+            >
               <X className="w-5 h-5" />
             </Dialog.Close>
           </div>
@@ -306,7 +336,14 @@ export function EditLandingPageDialog({ landingPage, onClose, onSaved }: EditLan
               </Tabs.Trigger>
             </Tabs.List>
 
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            <form 
+              onSubmit={(e) => {
+                e.preventDefault()
+                console.log('Formulário submetido')
+                handleFormSubmit(e)
+              }}
+              className="space-y-6"
+            >
               <Tabs.Content value="basic" className="space-y-4">
                 <div className="space-y-4">
                   <h3 className="text-sm font-medium text-text-primary">
@@ -803,15 +840,14 @@ export function EditLandingPageDialog({ landingPage, onClose, onSaved }: EditLan
               </Tabs.Content>
 
               <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-border">
-                <Dialog.Close asChild>
-                  <button
-                    type="button"
-                    className="btn-secondary px-4 py-2 rounded-xl"
-                    disabled={isLoading}
-                  >
-                    Cancelar
-                  </button>
-                </Dialog.Close>
+                <button
+                  type="button"
+                  className="btn-secondary px-4 py-2 rounded-xl"
+                  disabled={isLoading}
+                  onClick={() => !isLoading && onClose()}
+                >
+                  Cancelar
+                </button>
                 <button
                   type="submit"
                   className="btn-action px-4 py-2 rounded-xl flex items-center gap-2"

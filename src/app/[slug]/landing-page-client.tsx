@@ -469,24 +469,34 @@ export function LandingPageClient({ slug }: Props) {
       setSubmitSuccess(false);
 
       try {
+        console.log('Dados do formulário:', formData);
+        
         // Criar objeto do lead com todos os dados necessários
         const leadData = {
           landing_page_id: landingPage.id,
-          form_data: formData,
-          created_at: new Date().toISOString(),
-          status: 'new',
-          metadata: {
-            user_agent: window.navigator.userAgent,
-            referrer: document.referrer,
-            url: window.location.href
+          email: formData.email || '',
+          name: formData.name || formData.nome || '',
+          phone: formData.phone || formData.telefone || '',
+          data: {
+            ...formData,
+            metadata: {
+              user_agent: window.navigator.userAgent,
+              referrer: document.referrer,
+              url: window.location.href
+            }
           }
         };
+
+        console.log('Dados do lead a serem enviados:', leadData);
 
         const { error } = await supabase
           .from('leads')
           .insert([leadData]);
 
-        if (error) throw error;
+        if (error) {
+          console.error('Erro detalhado do Supabase:', error);
+          throw error;
+        }
 
         console.log('✅ Lead salvo com sucesso:', leadData);
         setSubmitSuccess(true);
@@ -494,6 +504,7 @@ export function LandingPageClient({ slug }: Props) {
 
         // Eventos de conversão
         if (landingPage.ga_id && (window as any).gtag) {
+          console.log('Enviando evento para Google Analytics');
           (window as any).gtag('event', 'conversion', {
             send_to: landingPage.ga_id,
             event_category: 'lead',
@@ -501,6 +512,7 @@ export function LandingPageClient({ slug }: Props) {
           });
         }
         if (landingPage.meta_pixel_id && (window as any).fbq) {
+          console.log('Enviando evento para Meta Pixel');
           (window as any).fbq('track', 'Lead', {
             landing_page: landingPage.title,
             form_data: formData
@@ -521,12 +533,13 @@ export function LandingPageClient({ slug }: Props) {
         }
 
         if (thankYouPageData?.slug) {
+          console.log('Redirecionando para página de agradecimento:', thankYouPageData.slug);
           setTimeout(() => {
             window.location.href = `/${thankYouPageData.slug}`;
           }, 500);
         }
       } catch (error) {
-        console.error('❌ Erro ao enviar formulário:', error);
+        console.error('❌ Erro detalhado ao enviar formulário:', error);
         setSubmitError('Ocorreu um erro ao enviar o formulário. Tente novamente.');
       } finally {
         setIsSubmitting(false);
